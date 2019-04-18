@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFrameworks>net462;netcoreapp2.2</TargetFrameworks>
+        <PlatformTarget>x64</PlatformTarget>
+        <RuntimeIdentifiers>win7-x64</RuntimeIdentifiers>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <RootNamespace>WyHash.Benchmarks</RootNamespace>
+
+        <!-- Must be the same as the .csproj file (requirement by Benchmark.NET) -->
+        <AssemblyName>Benchmarks</AssemblyName>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="BenchmarkDotNet" Version="0.11.5" />
+        <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.11.5" />
+        <PackageReference Include="Standart.Hash.xxHash" Version="1.0.6" />
+        <PackageReference Include="System.Memory" Version="4.5.2" />
+        <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.6.0-preview3.19128.7" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\WyHash\WyHash.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- Copy native DLL to output folder -->
+        <None Include="WyHash.Native.dll">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+
+        <!-- Don't show native DLL in the solution explorer -->
+        <None Update="WyHash.Native.dll" Visible="false" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- Copy native DLL to output folder -->
+        <None Include="xxHash.Native.dll">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+
+        <!-- Don't show native DLL in the solution explorer -->
+        <None Update="xxHash.Native.dll" Visible="false" />
+    </ItemGroup>
+    
+</Project>

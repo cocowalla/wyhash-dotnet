@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>WyHash.Benchmarks.Test-20190418-041103</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.11.5, OS=Windows 7 SP1 (6.1.7601.0)
+Intel Xeon CPU E3-1545M v5 2.90GHz, 1 CPU, 8 logical and 4 physical cores
+Frequency=2836132 Hz, Resolution=352.5929 ns, Timer=TSC
+.NET Core SDK=2.2.105
+  [Host] : .NET Core 2.2.3 (CoreCLR 4.6.27414.05, CoreFX 4.6.27414.05), 64bit RyuJIT
+  Core   : .NET Core 2.2.3 (CoreCLR 4.6.27414.05, CoreFX 4.6.27414.05), 64bit RyuJIT
+</code></pre>
+<pre><code>Job=Core  Runtime=Core  
+</code></pre>
+
+<table>
+<thead><tr><th>    Method</th><th>DataSize</th><th>Mean</th><th>Error</th><th>StdDev</th><th>Median</th><th>Min</th><th>Max</th><th>Ratio</th><th>RatioSD</th><th>Rank</th><th>Gen 0</th><th>Gen 1</th><th>Gen 2</th><th>Allocated</th>
+</tr>
+</thead><tbody><tr><td>TestXxHash</td><td>100</td><td>20.40 ns</td><td>0.4396 ns</td><td>0.3671 ns</td><td>20.48 ns</td><td>19.71 ns</td><td>20.92 ns</td><td>0.48</td><td>0.02</td><td>2</td><td>-</td><td>-</td><td>-</td><td>-</td>
+</tr><tr><td>TestXxHashNative</td><td>100</td><td>24.53 ns</td><td>0.5409 ns</td><td>0.5313 ns</td><td>24.43 ns</td><td>23.95 ns</td><td>25.71 ns</td><td>0.58</td><td>0.02</td><td>3</td><td>-</td><td>-</td><td>-</td><td>-</td>
+</tr><tr><td>TestWyHashNative</td><td>100</td><td>18.96 ns</td><td>0.0906 ns</td><td>0.0757 ns</td><td>18.95 ns</td><td>18.85 ns</td><td>19.12 ns</td><td>0.44</td><td>0.01</td><td>1</td><td>-</td><td>-</td><td>-</td><td>-</td>
+</tr><tr><td>TestWyHash</td><td>100</td><td>40.53 ns</td><td>0.8427 ns</td><td>1.6829 ns</td><td>39.59 ns</td><td>39.13 ns</td><td>44.56 ns</td><td>1.00</td><td>0.00</td><td>4</td><td>-</td><td>-</td><td>-</td><td>-</td>
+</tr><tr><td>TestXxHash</td><td>1024</td><td>99.90 ns</td><td>0.7521 ns</td><td>0.6667 ns</td><td>99.74 ns</td><td>99.06 ns</td><td>101.42 ns</td><td>0.32</td><td>0.01</td><td>3</td><td>-</td><td>-</td><td>-</td><td>-</td>
+</tr><tr><td>TestXxHashNative</td><td>1024</td><td>98.04 ns</td><td>2.2641 ns</td><td>3.2471 ns</td><td>96.98 ns</td><td>93.90 ns</td><td>105.07 ns</td><td>0.31</td><td>0.01</td><td>2</td><td>-</td><td>-</td><td>-</td><td>-</td>
+</tr><tr><td>TestWyHashNative</td><td>1024</td><td>78.13 ns</td><td>0.6726 ns</td><td>0.5963 ns</td><td>78.04 ns</td><td>77.34 ns</td><td>79.58 ns</td><td>0.25</td><td>0.01</td><td>1</td><td>-</td><td>-</td><td>-</td><td>-</td>
+</tr><tr><td>TestWyHash</td><td>1024</td><td>313.00 ns</td><td>6.1691 ns</td><td>8.6482 ns</td><td>310.51 ns</td><td>302.29 ns</td><td>328.01 ns</td><td>1.00</td><td>0.00</td><td>4</td><td>-</td><td>-</td><td>-</td><td>-</td>
+</tr></tbody></table>
+</body>
+</html>
