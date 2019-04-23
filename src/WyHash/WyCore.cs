@@ -30,6 +30,8 @@ namespace WyHash
         /// <summary>
         /// Multiplies 2 unsigned 64-bit integers, returning the result in 2 ulongs representing the hi and lo bits
         /// of the resulting 128-bit integer
+        ///
+        /// Source: https://stackoverflow.com/a/51587262/25758, but with a faster lo calculation
         /// </summary>
         /// <remarks>
         /// <seealso cref="System.Numerics.BigInteger"/> can perform multiplication on large integers, but it's
@@ -41,23 +43,24 @@ namespace WyHash
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static (ulong Hi, ulong Lo) Multiply64(ulong x, ulong y)
         {
-            var u1 = x & 0xffffffff;
-            var v1 = y & 0xffffffff;
-            var t = u1 * v1;
-            var w3 = t & 0xffffffff;
-            var k = t >> 32;
-
-            x >>= 32;
-            t = x * v1 + k;
-            k = t & 0xffffffff;
-            var w1 = t >> 32;
-
-            y >>= 32;
-            t = u1 * y + k;
-            k = t >> 32;
-
-            var hi = x * y + w1 + k;
-            var lo = (t << 32) + w3;
+            var lo = x * y;
+            
+            ulong x0 = (uint)x;
+            ulong x1 = x >> 32;
+            
+            ulong y0 = (uint)y;
+            ulong y1 = y >> 32;
+            
+            ulong p11 = x1 * y1;
+            ulong p01 = x0 * y1;
+            ulong p10 = x1 * y0;
+            ulong p00 = x0 * y0;
+            
+            // 64-bit product + two 32-bit values
+            ulong middle = p10 + (p00 >> 32) + (uint)p01;
+            
+            // 64-bit product + two 32-bit values
+            ulong hi = p11 + (middle >> 32) + (p01 >> 32);
             
             return (hi, lo);
         }
