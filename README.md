@@ -1,6 +1,7 @@
 wyhash-dotnet
 =============
 [![NuGet](https://img.shields.io/nuget/v/WyHash.svg)](https://www.nuget.org/packages/WyHash)
+[![Build Status](https://ci.appveyor.com/api/projects/status/yv41pshy1xaks5ps?svg=true)](https://ci.appveyor.com/project/cocowalla/wyhash-dotnet)
 
 Zero-allocation C# implementation of [Wang Yi's](https://github.com/wangyi-fudan/wyhash) 64-bit **wyhash** hash algorithm and **wyrand** PRNG.
 
