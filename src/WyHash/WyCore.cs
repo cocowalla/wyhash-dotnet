@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace WyHash
@@ -41,9 +42,22 @@ namespace WyHash
         /// <param name="y">Second 64-bit integer</param>
         /// <returns>Product of <paramref name="x"/> and <paramref name="y"/></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static (ulong Hi, ulong Lo) Multiply64(ulong x, ulong y)
+        [SuppressMessage("ReSharper", "JoinDeclarationAndInitializer")]
+        internal static unsafe (ulong Hi, ulong Lo) Multiply64(ulong x, ulong y)
         {
-            var lo = x * y;
+            ulong hi;
+            ulong lo;
+
+// Use BMI2 intrinsics where available
+#if NETCOREAPP3_0
+            if (System.Runtime.Intrinsics.X86.Bmi2.X64.IsSupported)
+            {
+                hi = System.Runtime.Intrinsics.X86.Bmi2.X64.MultiplyNoFlags(x, y, &lo);
+                return (hi, lo);
+            }
+#endif
+
+            lo = x * y;
             
             ulong x0 = (uint)x;
             ulong x1 = x >> 32;
@@ -60,7 +74,7 @@ namespace WyHash
             ulong middle = p10 + (p00 >> 32) + (uint)p01;
             
             // 64-bit product + two 32-bit values
-            ulong hi = p11 + (middle >> 32) + (p01 >> 32);
+            hi = p11 + (middle >> 32) + (p01 >> 32);
             
             return (hi, lo);
         }
