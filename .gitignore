@@ -95,6 +95,9 @@ ClientBin/
 *.publishsettings
 node_modules/
 
+# Benchmark results (ones we want to keep are moved into /benchmarks)
+test/**/BenchmarkDotNet.Artifacts/
+
 # Backup & report files from converting an old project file
 # to a newer Visual Studio version. Backup files are not needed,
 # because we have git ;-)
