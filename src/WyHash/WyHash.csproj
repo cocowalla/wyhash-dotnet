@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <Description>Implementation of Wang Yi's wyhash 64-bit hash algorithm and wyrand PRNG. Reference implementation version 20190328</Description>
-        <VersionPrefix>1.0.1</VersionPrefix>
+        <VersionPrefix>1.0.2</VersionPrefix>
         <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
         <Authors>Colin Anderson</Authors>
         <Copyright>Copyright © Colin Anderson 2019</Copyright>
