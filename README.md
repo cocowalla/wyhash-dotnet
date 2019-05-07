@@ -53,47 +53,36 @@ rng.NextBytes(spanBuffer);
 
 Performance & Future Work
 -------------------------
-At present (April 2019), wyhash is the fastest algorithm in the [SMHasher](https://github.com/rurban/smhasher) benchmark.
+At present (May 2019), wyhash is the fastest algorithm in the [SMHasher](https://github.com/rurban/smhasher) benchmark.
 
-On a dev laptop with 64GB RAM and an Intel Xeon CPU E3-1545M v5 2.90GHz CPU, this implementation can process data at a rate of around 3.3GB/s, which is *very* fast.
+On a dev laptop with 64GB RAM and an Intel Xeon CPU E3-1545M v5 2.90GHz CPU, this implementation can process data at a rate of around 5.5GB/s on .NET Core 3, or 3.3GB/s on .NET Core 2 or the .NET Framework - this is *very* fast.
 
-Note that `PInvoke`ing into a native DLL built using the reference C code (see the `WyHash.Native` project) achieves around 10.8GB/s, so there is still work to do to bridge the performance gap.
+The reason for the performance improvement on .NET Core 3 is that it supports [hardware intrinsics](https://fiigii.com/2019/03/03/Hardware-intrinsic-in-NET-Core-3-0-Introduction/), and wyhash-dotnet uses the [BMI2 `MULX`](https://www.felixcloutier.com/x86/MULX.html) instruction to achieve faster 64-bit integer multiplication (on systems where BMI2 is available). Support for intrinsics won't make it into the .NET Framework, but will also be in the newly announced .NET 5.
 
-The bottleneck is **64-bit integer multiplication**, as .NET doesn't yet support intrinsics, which would allow performing 64x64 multiplication in a single instruction on supported platforms. Work on this is ongoing by the .NET team, and is expected to land in .NET Core 3.0 - support is unlikely to make it into the .NET Framework though. I expected that using instructions such as BMI2 `MULX` or SSE4.1 `PMULLD` will get this implementation running at roughly the same speeds as the C reference code (that is, more or less *RAM SPEED*)
+Note that `PInvoke`ing into a native DLL built using the reference C code (see the `WyHash.Native` project) achieves around 10.8GB/s (more or less *RAM SPEED*), so there is still work to do to bridge the performance gap between C# and native - I'm very much open to suggestions here!
 
 Latest benchmarks (`DataSize` is the size of data hashed, in bytes):
 
-``` ini
+```ini
 
 BenchmarkDotNet=v0.11.5, OS=Windows 7 SP1 (6.1.7601.0)
 Intel Xeon CPU E3-1545M v5 2.90GHz, 1 CPU, 8 logical and 4 physical cores
-Frequency=2836132 Hz, Resolution=352.5929 ns, Timer=TSC
-.NET Core SDK=2.2.105
-  [Host] : .NET Core 2.2.3 (CoreCLR 4.6.27414.05, CoreFX 4.6.27414.05), 64bit RyuJIT
-  Core   : .NET Core 2.2.3 (CoreCLR 4.6.27414.05, CoreFX 4.6.27414.05), 64bit RyuJIT
-
-Job=Core  Runtime=Core  
-
-``` ini
-
-BenchmarkDotNet=v0.11.5, OS=Windows 7 SP1 (6.1.7601.0)
-Intel Xeon CPU E3-1545M v5 2.90GHz, 1 CPU, 8 logical and 4 physical cores
-Frequency=2836132 Hz, Resolution=352.5929 ns, Timer=TSC
-.NET Core SDK=2.2.105
-  [Host] : .NET Core 2.2.3 (CoreCLR 4.6.27414.05, CoreFX 4.6.27414.05), 64bit RyuJIT
-  Core   : .NET Core 2.2.3 (CoreCLR 4.6.27414.05, CoreFX 4.6.27414.05), 64bit RyuJIT
+Frequency=2836064 Hz, Resolution=352.6014 ns, Timer=TSC
+.NET Core SDK=3.0.100-preview4-011223
+  [Host] : .NET Core 3.0.0-preview4-27615-11 (CoreCLR 4.6.27615.73, CoreFX 4.700.19.21213), 64bit RyuJIT
+  Core   : .NET Core 3.0.0-preview4-27615-11 (CoreCLR 4.6.27615.73, CoreFX 4.700.19.21213), 64bit RyuJIT
 
 Job=Core  Runtime=Core  
 
 ```
-|           Method | DataSize |      Mean |     Error |    StdDev |    Median |       Min |       Max | Ratio | RatioSD | Rank | Gen 0 | Gen 1 | Gen 2 | Allocated |
-|----------------- |--------- |----------:|----------:|----------:|----------:|----------:|----------:|------:|--------:|-----:|------:|------:|------:|----------:|
-|       TestXxHash |      100 |  18.19 ns | 0.1241 ns | 0.1161 ns |  18.14 ns |  18.05 ns |  18.43 ns |  0.57 |    0.01 |    2 |     - |     - |     - |         - |
-| TestXxHashNative |      100 |  21.85 ns | 0.1671 ns | 0.1563 ns |  21.90 ns |  21.63 ns |  22.08 ns |  0.69 |    0.01 |    3 |     - |     - |     - |         - |
-| TestWyHashNative |      100 |  16.50 ns | 0.3931 ns | 1.1528 ns |  15.88 ns |  15.37 ns |  19.77 ns |  0.57 |    0.02 |    1 |     - |     - |     - |         - |
-|     *TestWyHash* |      100 |  31.84 ns | 0.2136 ns | 0.1998 ns |  31.85 ns |  31.47 ns |  32.18 ns |  1.00 |    0.00 |    4 |     - |     - |     - |         - |
-|                  |          |           |           |           |           |           |           |       |         |      |       |       |       |           |
-|       TestXxHash |     1024 |  97.64 ns | 0.6791 ns | 0.6020 ns |  97.52 ns |  96.98 ns |  99.13 ns |  0.41 |    0.01 |    3 |     - |     - |     - |         - |
-| TestXxHashNative |     1024 |  89.51 ns | 1.1083 ns | 1.0367 ns |  89.92 ns |  87.46 ns |  90.84 ns |  0.37 |    0.01 |    2 |     - |     - |     - |         - |
-| TestWyHashNative |     1024 |  71.31 ns | 0.7103 ns | 0.6644 ns |  71.34 ns |  70.54 ns |  72.85 ns |  0.30 |    0.01 |    1 |     - |     - |     - |         - |
-|     *TestWyHash* |     1024 | 238.94 ns | 5.0078 ns | 5.1426 ns | 236.56 ns | 234.14 ns | 249.36 ns |  1.00 |    0.00 |    4 |     - |     - |     - |         - |
+|           Method | DataSize |      Mean |     Error |    StdDev |       Min |       Max | Ratio | RatioSD | Rank | Gen 0 | Gen 1 | Gen 2 | Allocated |
+|----------------- |--------- |----------:|----------:|----------:|----------:|----------:|------:|--------:|-----:|------:|------:|------:|----------:|
+|       TestXxHash |      100 |  20.84 ns | 0.4168 ns | 0.6964 ns |  20.02 ns |  22.99 ns |  0.95 |    0.03 |    2 |     - |     - |     - |         - |
+| TestXxHashNative |      100 |  24.33 ns | 0.3217 ns | 0.3009 ns |  23.99 ns |  24.92 ns |  1.10 |    0.02 |    4 |     - |     - |     - |         - |
+| TestWyHashNative |      100 |  18.63 ns | 0.1110 ns | 0.0984 ns |  18.47 ns |  18.87 ns |  0.84 |    0.01 |    1 |     - |     - |     - |         - |
+|     *TestWyHash* |      100 |  22.18 ns | 0.2429 ns | 0.2273 ns |  21.84 ns |  22.52 ns |  1.00 |    0.00 |    3 |     - |     - |     - |         - |
+|                  |          |           |           |           |           |           |       |         |      |       |       |       |           |
+|       TestXxHash |     1024 | 106.06 ns | 1.0322 ns | 0.9150 ns | 105.25 ns | 108.04 ns |  0.79 |    0.01 |    3 |     - |     - |     - |         - |
+| TestXxHashNative |     1024 |  93.75 ns | 1.9055 ns | 2.1943 ns |  91.79 ns |  99.02 ns |  0.71 |    0.02 |    2 |     - |     - |     - |         - |
+| TestWyHashNative |     1024 |  75.38 ns | 1.1722 ns | 0.9788 ns |  74.37 ns |  77.46 ns |  0.56 |    0.01 |    1 |     - |     - |     - |         - |
+|     *TestWyHash* |     1024 | 133.58 ns | 2.0582 ns | 1.9252 ns | 131.38 ns | 137.66 ns |  1.00 |    0.00 |    4 |     - |     - |     - |         - |
