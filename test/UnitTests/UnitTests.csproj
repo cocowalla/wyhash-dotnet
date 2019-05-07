@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net462;netcoreapp2.2</TargetFrameworks>
+        <TargetFrameworks>net462;netcoreapp2.2;netcoreapp3.0</TargetFrameworks>
         <AssemblyName>WyHash.UnitTests</AssemblyName>
         <RootNamespace>WyHash.UnitTests</RootNamespace>
     </PropertyGroup>

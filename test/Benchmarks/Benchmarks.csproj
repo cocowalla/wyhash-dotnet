@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFrameworks>net462;netcoreapp2.2</TargetFrameworks>
+        <TargetFrameworks>net462;netcoreapp2.2;netcoreapp3.0</TargetFrameworks>
         <PlatformTarget>x64</PlatformTarget>
         <RuntimeIdentifiers>win7-x64</RuntimeIdentifiers>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -43,5 +43,5 @@
         <!-- Don't show native DLL in the solution explorer -->
         <None Update="xxHash.Native.dll" Visible="false" />
     </ItemGroup>
-    
+
 </Project>

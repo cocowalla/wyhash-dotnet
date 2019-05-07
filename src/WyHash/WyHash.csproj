@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <Description>Implementation of Wang Yi's wyhash 64-bit hash algorithm and wyrand PRNG. Reference implementation version 20190328</Description>
@@ -6,7 +6,7 @@
         <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
         <Authors>Colin Anderson</Authors>
         <Copyright>Copyright © Colin Anderson 2019</Copyright>
-        <TargetFrameworks>net462;netstandard2.0</TargetFrameworks>
+        <TargetFrameworks>net462;netstandard2.0;netcoreapp3.0</TargetFrameworks>
         <AssemblyName>WyHash</AssemblyName>
         <RootNamespace>WyHash</RootNamespace>
         <RepositoryUrl>https://github.com/cocowalla/wyhash-dotnet</RepositoryUrl>
