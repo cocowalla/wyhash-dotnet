@@ -62,6 +62,7 @@ namespace WyHash.UnitTests
         [Theory]
         public void Should_hash_data(int count, string expected)
         {
+            // ReSharper disable once BuiltInTypeReferenceStyle
             var message = new String('a', count);
             var data = Encoding.UTF8.GetBytes(message);
             

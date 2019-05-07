@@ -34,10 +34,10 @@ namespace WyHash.Benchmarks
         {
             var rand = new Random(42);
 
-            this.data = new byte[DataSize];
+            this.data = new byte[this.DataSize];
             rand.NextBytes(this.data);
         }
-        
+
         // Compare against Standart.Hash.xxHash, which is an *extremely* well optimised implementation of xxHash:
         // https://github.com/uranium62/xxHash
         [Benchmark]
@@ -59,7 +59,7 @@ namespace WyHash.Benchmarks
         {
             var result = NativeWyHash64.ComputeHash64(this.data, Seed);
         }
-        
+
         [Benchmark(Baseline = true)]
         public void TestWyHash()
         {
