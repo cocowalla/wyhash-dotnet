@@ -20,7 +20,7 @@
         <PackageTags>wyhash;hash;cryptography;prng</PackageTags>
         <PackageProjectUrl>https://github.com/cocowalla/wyhash-dotnet</PackageProjectUrl>
         <PackageId>WyHash</PackageId>
-        <PackageLicenseUrl>https://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     </PropertyGroup>
 
     <ItemGroup>
