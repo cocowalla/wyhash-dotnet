@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 
 // ReSharper disable InconsistentNaming
@@ -32,12 +33,41 @@ namespace WyHash
         /// <summary>
         /// Convenience method to compute a WyHash hash and return the result as a 64-bit unsigned integer
         /// </summary>
-        public static ulong ComputeHash64(byte[] array, ulong seed)
+        public static ulong ComputeHash64(byte[] array, ulong seed = 0)
         {
-            seed = WyHashCore(array, 0, array.Length, seed);
+            seed = WyHashCore(array.AsSpan(), seed);
             return HashFinal(seed, (ulong)array.Length);
         }
-                            
+
+        /// <summary>
+        /// Convenience method to compute a WyHash hash and return the result as a 64-bit unsigned integer
+        /// </summary>
+        public static ulong ComputeHash64(ReadOnlySpan<byte> data, ulong seed = 0)
+        {
+            seed = WyHashCore(data, seed);
+            return HashFinal(seed, (ulong)data.Length);
+        }
+
+        /// <summary>
+        /// Convenience method to compute a WyHash hash and return the result as a 64-bit unsigned integer
+        /// </summary>
+        public static ulong ComputeHash64(ReadOnlySpan<char> str, ulong seed = 0)
+        {
+            var data = MemoryMarshal.Cast<char, byte>(str);
+            seed = WyHashCore(data, seed);
+            return HashFinal(seed, (ulong)data.Length);
+        }
+
+        /// <summary>
+        /// Convenience method to compute a WyHash hash and return the result as a 64-bit unsigned integer
+        /// </summary>
+        public static ulong ComputeHash64(string str, ulong seed = 0)
+        {
+            var data = MemoryMarshal.Cast<char, byte>(str.AsSpan());
+            seed = WyHashCore(data, seed);
+            return HashFinal(seed, (ulong)data.Length);
+        }
+
         public override void Initialize()
         {
             this.seed = 0;
@@ -50,20 +80,20 @@ namespace WyHash
             var len = cbSize - ibStart;
             this.length += (ulong)len;
 
-            this.seed = WyHashCore(array, ibStart, cbSize, this.seed);
+            this.seed = WyHashCore(array.AsSpan(ibStart, cbSize), this.seed);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static unsafe ulong WyHashCore(byte[] array, int ibStart, int cbSize, ulong seed)
+        private static unsafe ulong WyHashCore(ReadOnlySpan<byte> span, ulong seed)
         {
-            fixed (byte* pData = array)
+            fixed (byte* pData = span)
             {
                 byte* ptr = pData;
                 
-                var len = cbSize - ibStart;
+                var len = span.Length;
                 var p = 0;
                 
-                for (int i = ibStart; i + 32 <= len; i += 32, p += 32)
+                for (int i = 0; i + 32 <= len; i += 32, p += 32)
                 {
                     // Storing these in temp variables is slightly more performant (presumably it gives some kind of hint to the jitter)
                     var m1x = WyCore.Read64(ptr, p) ^ WyCore.Prime1;
