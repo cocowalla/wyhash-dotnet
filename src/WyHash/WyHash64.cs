@@ -8,7 +8,7 @@ namespace WyHash
 {
     /// <inheritdoc />
     /// <summary>
-    /// .NET implementation of the wyhash 64-bit hash algorithm by Wang Yi. Reference implementation (version 20190328):
+    /// .NET implementation of the wyhash 64-bit hash algorithm by Wang Yi. Implements wyhash v1:
     /// https://github.com/wangyi-fudan/wyhash/blob/master/wyhash.h
     /// </summary>
     public class WyHash64 : HashAlgorithm

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Description>Implementation of Wang Yi's wyhash 64-bit hash algorithm and wyrand PRNG. Reference implementation version 20190328</Description>
+        <Description>Implementation of Wang Yi's wyhash 64-bit hash algorithm and wyrand PRNG. Implements wyhash v1</Description>
         <VersionPrefix>1.0.3</VersionPrefix>
         <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
         <Authors>Colin Anderson</Authors>

@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 namespace WyHash
 {
     /// <summary>
-    /// .NET implementation of the wyrand PRNG by Wang Yi. Reference implementation (version 20190328):
+    /// .NET implementation of the wyrand PRNG by Wang Yi. Implements wyhash v1:
     /// https://github.com/wangyi-fudan/wyhash/blob/master/wyhash.h
     /// </summary>
     public class WyRng
