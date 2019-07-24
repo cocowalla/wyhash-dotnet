@@ -7,6 +7,8 @@ Zero-allocation C# implementation of [Wang Yi's](https://github.com/wangyi-fudan
 
 wyhash is an extremely fast, portable hashing algorithm, and passes all of the [SMHasher](https://github.com/rurban/smhasher) tests (which evaluates collision, dispersion and randomness qualities of hash functions).
 
+Note wyhash-dotnet currently implements wyhash v1. v2 will be implemented once considered "stable".
+
 Getting Started
 -----
 
@@ -53,7 +55,11 @@ rng.NextBytes(spanBuffer);
 
 Performance & Future Work
 -------------------------
-At present (May 2019), wyhash is the fastest algorithm in the [SMHasher](https://github.com/rurban/smhasher) benchmark.
+Note wyhash-dotnet currently implements wyhash v1. v2 will be implemented once considered "stable".
+
+Future improvements include support for `Span` and incremental hashing (useful for hashing streams).
+
+At present (July 2019), wyhash is the fastest algorithm in the [SMHasher](https://github.com/rurban/smhasher) benchmark.
 
 On a dev laptop with 64GB RAM and an Intel Xeon CPU E3-1545M v5 2.90GHz CPU, this implementation can process data at a rate of around 5.5GB/s on .NET Core 3, or 3.3GB/s on .NET Core 2 or the .NET Framework - this is *very* fast.
 
