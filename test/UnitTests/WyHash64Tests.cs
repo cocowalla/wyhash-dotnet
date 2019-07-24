@@ -1,4 +1,5 @@
 using System;
+using System.Buffers.Binary;
 using System.Text;
 using Shouldly;
 using Xunit;
@@ -84,5 +85,28 @@ namespace WyHash.UnitTests
             // 64 bits/8 bytes
             hasher.HashSize.ShouldBe(64);
         }
+
+#if NETCOREAPP
+        [Theory()]
+        [InlineData(1, 17)]
+        [InlineData(5, 17)]
+        [InlineData(17, 17)]
+        [InlineData(42, 17)]
+        [InlineData(999, 17)]
+        public void Different_overloads_returns_the_same(int length, int randomSeed)
+        {
+            var rand = new Random(randomSeed);
+            var data = new byte[length];
+            rand.NextBytes(data);
+
+            Assert.Equal(WyHash64.ComputeHash64(data), WyHash64.ComputeHash64(data.AsSpan()));
+
+            var hashAlgorithm = WyHash64.Create();
+            Span<byte> hashBlock = stackalloc byte[hashAlgorithm.HashSize / 8];
+            hashAlgorithm.TryComputeHash(data.AsSpan(), hashBlock, out int bytesWritten);
+            Assert.Equal(hashBlock.Length, hashBlock.Length);
+            Assert.Equal(BinaryPrimitives.ReadUInt64LittleEndian(hashBlock), WyHash64.ComputeHash64(data, 0));
+        }
+#endif
     }
 }

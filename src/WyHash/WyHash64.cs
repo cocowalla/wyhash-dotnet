@@ -1,4 +1,5 @@
 using System;
+using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
@@ -17,15 +18,16 @@ namespace WyHash
         private ulong seed;
         private ulong length;
         
-        /// <inheritdoc cref="HashAlgorithm.HashSize"/>    
-        public override int HashSize => 64;
-
         public new static WyHash64 Create() => new WyHash64();
         public static WyHash64 Create(ulong seed) => new WyHash64(seed);
 
-        private WyHash64() { }
+        private WyHash64()
+        {
+            this.HashSizeValue = sizeof(ulong) * 8;
+        }
         
         private WyHash64(ulong seed = 0)
+            :  this()
         {
             this.seed = seed;
         }
@@ -82,6 +84,37 @@ namespace WyHash
 
             this.seed = WyHashCore(array.AsSpan(ibStart, cbSize), this.seed);
         }
+
+#if NETCOREAPP
+        /// <inheritdoc />    
+        protected override void HashCore(ReadOnlySpan<byte> source)
+        {
+            this.length += (ulong)source.Length;
+            this.seed = WyHashCore(source, this.seed);
+        }
+
+        /// <inheritdoc />    
+        public new bool TryComputeHash(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesWritten)
+        {
+            HashCore(source);
+            return TryHashFinal(destination, out bytesWritten);
+        }
+
+        /// <inheritdoc />    
+        protected override bool TryHashFinal(Span<byte> destination, out int bytesWritten)
+        {
+            var result = HashFinal(this.seed, this.length);
+
+            if (BinaryPrimitives.TryWriteUInt64LittleEndian(destination, result))
+            {
+                bytesWritten = sizeof(ulong);
+                return true;
+            }
+
+            bytesWritten = 0;
+            return false;
+        }
+#endif
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static unsafe ulong WyHashCore(ReadOnlySpan<byte> span, ulong seed)
@@ -226,7 +259,8 @@ namespace WyHash
         protected override byte[] HashFinal()
         {
             var result = HashFinal(this.seed, this.length);
-            return BitConverter.GetBytes(result);
+            var r = BitConverter.GetBytes(result);
+            return r;
         }
         
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
