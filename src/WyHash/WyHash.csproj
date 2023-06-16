@@ -2,11 +2,11 @@
 
     <PropertyGroup>
         <Description>Implementation of Wang Yi's wyhash 64-bit hash algorithm and wyrand PRNG. Implements wyhash v1</Description>
-        <VersionPrefix>1.0.4</VersionPrefix>
+        <VersionPrefix>1.0.5</VersionPrefix>
         <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
         <Authors>Colin Anderson</Authors>
         <Copyright>Copyright © Colin Anderson 2019</Copyright>
-        <TargetFrameworks>net462;netstandard2.0;netcoreapp3.0</TargetFrameworks>
+        <TargetFrameworks>net462;netstandard2.0;net6.0;net7.0</TargetFrameworks>
         <AssemblyName>WyHash</AssemblyName>
         <RootNamespace>WyHash</RootNamespace>
         <RepositoryUrl>https://github.com/cocowalla/wyhash-dotnet</RepositoryUrl>
@@ -21,8 +21,18 @@
         <PackageProjectUrl>https://github.com/cocowalla/wyhash-dotnet</PackageProjectUrl>
         <PackageId>WyHash</PackageId>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+
+        <!-- Enable Source Link -->
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EnableSourceLink Condition="'$(EnableSourceLink)' == ''">false</EnableSourceLink>
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     </PropertyGroup>
 
+    <ItemGroup>
+        <None Include="../../README.md" Pack="true" PackagePath="/" />
+    </ItemGroup>
+    
     <ItemGroup>
         <PackageReference Include="System.Memory" Version="4.5.3" />
     </ItemGroup>
