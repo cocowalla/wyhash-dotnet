@@ -1,5 +1,5 @@
 dotnet restore .\wyhash-dotnet.sln
-dotnet build .\src\WyHash\WyHash.csproj --configuration Release
+dotnet build .\src\WyHash\WyHash.csproj --configuration Release -p:EnableSourceLink=true
 
 dotnet test .\test\UnitTests\UnitTests.csproj
 
